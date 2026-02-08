@@ -1,10 +1,11 @@
 """
 Django settings for trishartsy project.
-Modified for Vercel Deployment.
+Final Production Version for Vercel + Neon + Cloudinary.
 """
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # ===============================
 # BASE DIRECTORY
@@ -15,13 +16,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ===============================
 # SECURITY SETTINGS
 # ===============================
-# Use an environment variable for the secret key in production
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-!=*ng+x2sh#wioas^d2s%%q=eh#q+829&hl$43+9($($u14&fj')
 
 # DEBUG should be False in production
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# Allow Vercel domains and local development
 ALLOWED_HOSTS = ['.vercel.app', 'now.sh', 'localhost', '127.0.0.1']
 
 
@@ -34,7 +33,13 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    
+    # Must be above cloudinary_storage
     'django.contrib.staticfiles',
+    
+    # Third-party
+    'cloudinary_storage',
+    'cloudinary',
 
     # Local apps
     'booking',
@@ -46,7 +51,7 @@ INSTALLED_APPS = [
 # ===============================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Added for static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',  
@@ -76,7 +81,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.messages',
+                'django.contrib.messages.context_processors.messages', # Fixed typo here
                 'django.template.context_processors.media',
                 'booking.context_processors.latest_booking_context',
             ],
@@ -86,35 +91,25 @@ TEMPLATES = [
 
 
 # ===============================
-# DATABASE
+# DATABASE (Neon PostgreSQL)
 # ===============================
-# Note: SQLite will reset on every Vercel deployment. 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 
 # ===============================
-# PASSWORD VALIDATION
+# CLOUDINARY STORAGE CONFIG
 # ===============================
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
-
-
-# ===============================
-# INTERNATIONALIZATION
-# ===============================
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'Asia/Manila'
-USE_I18N = True
-USE_TZ = True
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
 
 
 # ===============================
@@ -124,9 +119,16 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "booking" / "static",
 ]
-# Critical for production:
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -140,6 +142,11 @@ LOGIN_URL = '/login/'
 
 
 # ===============================
-# DEFAULT PRIMARY KEY FIELD TYPE
+# INTERNATIONALIZATION
 # ===============================
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'Asia/Manila'
+USE_I18N = True
+USE_TZ = True
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
