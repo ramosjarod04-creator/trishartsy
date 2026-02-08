@@ -51,7 +51,7 @@ INSTALLED_APPS = [
 # ===============================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # MUST be second
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',  
@@ -81,7 +81,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages', # Fixed typo here
+                'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
                 'booking.context_processors.latest_booking_context',
             ],
@@ -120,6 +120,9 @@ STATICFILES_DIRS = [
     BASE_DIR / "booking" / "static",
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Use WhiteNoise to find static files in app directories
+WHITENOISE_USE_FINDERS = True
 
 STORAGES = {
     "default": {
