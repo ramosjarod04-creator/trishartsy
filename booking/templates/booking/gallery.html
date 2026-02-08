@@ -1,0 +1,494 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrishArtSy | Gallery</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: #ffebdb;
+  color: #111;
+  min-height: 100vh;
+  padding: 40px 60px;
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  background: #edd5d5;
+  padding: 20px 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+header h1 {
+  font-size: 35px;
+  font-weight: 900;
+  color: #551919;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+}
+
+nav a {
+  margin-left: 20px;
+  background: #c5b8c8;
+  padding: 10px 15px;
+  border-radius: 12px;
+  color: #672727;
+  font-weight: 800;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+nav a:hover {
+  background: #b79dbf;
+  color: #ac2c24;
+}
+
+/* Notification Bell */
+.notification {
+  position: relative;
+  margin-right: 15px;
+}
+
+.notification .fa-bell {
+  font-size: 22px;
+  color: #672727;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.notification .fa-bell:hover {
+  color: #ac2c24;
+}
+
+.notification .badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: red;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 50%;
+}
+
+/* Notification Dropdown */
+.notif-dropdown {
+  position: absolute;
+  top: 35px;
+  right: 0;
+  background: #fff8f8;
+  border: 1px solid #b79dbf;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  width: 260px;
+  display: none;
+  z-index: 10;
+  padding: 10px;
+}
+
+.notif-dropdown.active {
+  display: block;
+}
+
+.notif-item {
+  padding: 10px;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+}
+
+.notif-item:last-child {
+  border-bottom: none;
+}
+
+/* Gallery Grid */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+}
+
+.art-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff3f3;
+  border-radius: 12px;
+  border: 3px solid #553535;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgb(70 42 42 / 9%);
+  transition: 0.3s;
+}
+
+.art-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+.art-card img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.art-card img:hover {
+  opacity: 0.9;
+}
+
+.art-card h3 {
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+}
+
+.art-card p {
+  font-size: 14px;
+  color: #4d360e;
+  margin-bottom: 15px;
+}
+
+/* Modal/Lightbox Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  overflow: auto;
+}
+
+.modal.active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  position: relative;
+  margin: auto;
+  max-width: 90%;
+  max-height: 90%;
+  animation: zoom 0.3s;
+}
+
+@keyframes zoom {
+  from {transform: scale(0.5)}
+  to {transform: scale(1)}
+}
+
+.modal-content img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.modal-info {
+  text-align: center;
+  color: #fff;
+  padding: 20px;
+  background: rgba(0,0,0,0.7);
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.modal-info h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.modal-info p {
+  font-size: 18px;
+  color: #ffebdb;
+}
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  color: #fff;
+  font-size: 50px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  z-index: 1001;
+}
+
+.close:hover,
+.close:focus {
+  color: #f44336;
+}
+
+/* Book Appointment Button */
+.book-btn-container {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.book-btn {
+  display: inline-block;
+  background: #a35959;
+  color: #fff;
+  font-weight: 900;
+  padding: 14px 40px;
+  border-radius: 30px;
+  border: 2px solid #553535;
+  text-decoration: none;
+  font-size: 20px;
+  box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3);
+  transition: all 0.3s ease;
+}
+
+.book-btn:hover {
+  background: #986ebe;
+  box-shadow: 0 8px 20px rgba(147, 51, 234, 0.4);
+  transform: translateY(-3px);
+}
+
+footer {
+  margin-top: 60px;
+  padding: 30px;
+  background: #edd5d5;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+footer p {
+  color: #551919;
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.social-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #fff3f3;
+  color: #551919;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.social-links a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+  background: #ffeaea;
+}
+
+.social-links a svg {
+  width: 20px;
+  height: 20px;
+}
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>TrishArtSy 🎨</h1>
+    <nav>
+
+      <!-- Notification Bell (LEFT side of Gallery) -->
+      <div class="notification" id="notifBell">
+        <i class="fa-solid fa-bell"></i>
+        {% if latest_booking %}
+          <span class="badge">1</span>
+        {% endif %}
+
+        <div class="notif-dropdown" id="notifDropdown">
+          {% if latest_booking %}
+            {% if latest_booking.status == 'Accepted' %}
+              <div class="notif-item">✅ Your booking has been <b>Accepted!</b></div>
+            {% elif latest_booking.status == 'Denied' %}
+              <div class="notif-item">❌ Your booking was <b>Denied</b>.</div>
+            {% else %}
+              <div class="notif-item">⏳ Your booking is <b>Pending</b> approval.</div>
+            {% endif %}
+          {% else %}
+            <div class="notif-item">No new notifications.</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <a href="{% url 'gallery' %}">Gallery</a>
+      <a href="{% url 'about' %}">About</a>
+      <a href="{% url 'book' %}">Book Now</a>
+      <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+  </header>
+
+  <main class="gallery">
+    <div class="art-card">
+      <img src="{% static 'images/line.jpg' %}" alt="Line Art Style" data-title="Line Art Style" data-price="₱40 - ₱200">
+      <h3>Line Art Style</h3>
+      <p>₱40 - ₱200</p>
+    </div>
+
+    <div class="art-card">
+      <img src="{% static 'images/nf.jpg' %}" alt="No Face Features" data-title="No Face Features Art" data-price="₱80 - ₱150">
+      <h3>No Face Features Art</h3>
+      <p>₱80 - ₱150</p>
+    </div>
+
+    <div class="art-card">
+      <img src="{% static 'images/deta.jpg' %}" alt="Detailed Vector" data-title="Detailed Vector Art" data-price="₱80 - ₱250">
+      <h3>Detailed Vector Art</h3>
+      <p>₱80 - ₱250</p>
+    </div>
+
+    <div class="art-card">
+      <img src="{% static 'images/detbg.jpg' %}" alt="Vector BG" data-title="Detailed Vector w/ Background" data-price="₱250 - ₱800">
+      <h3>Detailed Vector w/ Background</h3>
+      <p>₱250 - ₱800</p>
+    </div>
+
+    <div class="art-card">
+      <img src="{% static 'images/cute.jpg' %}" alt="Cutesie Cartoon" data-title="Cutesie Cartoon Style" data-price="₱80 - ₱200">
+      <h3>Cutesie Cartoon Style</h3>
+      <p>₱80 - ₱200</p>
+    </div>
+
+    <div class="art-card">
+      <img src="{% static 'images/cutebg.jpg' %}" alt="Cutesie BG" data-title="Cutesie Cartoon w/ Background" data-price="₱150 - ₱300">
+      <h3>Cutesie Cartoon w/ Background</h3>
+      <p>₱150 - ₱300</p>
+    </div>
+
+    <div class="art-card">
+      <img src="{% static 'images/pet.jpg' %}" alt="Pet Illustration" data-title="Pet Illustration" data-price="₱80 - ₱150">
+      <h3>Pet Illustration</h3>
+      <p>₱80 - ₱150</p>
+    </div>
+
+    <div class="art-card">
+      <img src="{% static 'images/chibi.jpg' %}" alt="Chibi Style" data-title="Chibi Style" data-price="₱100 - ₱200">
+      <h3>Chibi Style</h3>
+      <p>₱100 - ₱200</p>
+    </div>
+  </main>
+
+  <div class="book-btn-container">
+    <a href="{% url 'book' %}" class="book-btn">Book an Appointment</a>
+  </div>
+
+  <!-- Modal for Image Preview -->
+  <div id="imageModal" class="modal">
+    <span class="close">&times;</span>
+    <div class="modal-content">
+      <img id="modalImage" src="" alt="">
+      <div class="modal-info">
+        <h3 id="modalTitle"></h3>
+        <p id="modalPrice"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle notification dropdown
+    const bell = document.getElementById("notifBell");
+    const dropdown = document.getElementById("notifDropdown");
+
+    bell.addEventListener("click", () => {
+      dropdown.classList.toggle("active");
+    });
+
+    // Close dropdown if clicked outside
+    document.addEventListener("click", (e) => {
+      if (!bell.contains(e.target)) {
+        dropdown.classList.remove("active");
+      }
+    });
+
+    // Image Modal Functionality
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImage");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalPrice = document.getElementById("modalPrice");
+    const closeBtn = document.querySelector(".close");
+    const galleryImages = document.querySelectorAll(".art-card img");
+
+    // Open modal when clicking on an image
+    galleryImages.forEach(img => {
+      img.addEventListener("click", function() {
+        modal.classList.add("active");
+        modalImg.src = this.src;
+        modalTitle.textContent = this.dataset.title;
+        modalPrice.textContent = this.dataset.price;
+      });
+    });
+
+    // Close modal when clicking the X button
+    closeBtn.addEventListener("click", () => {
+      modal.classList.remove("active");
+    });
+
+    // Close modal when clicking outside the image
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.remove("active");
+      }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("active")) {
+        modal.classList.remove("active");
+      }
+    });
+  </script>
+
+<footer>
+    <p>Follow TrishArtSy on Social Media</p>
+    <div class="social-links">
+      <a href="https://www.facebook.com/trishartsy" target="_blank">
+        <svg fill="currentColor" viewBox="0 0 24 24">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+        </svg>
+        Facebook
+      </a>
+      <a href="https://www.instagram.com/trishartsy_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank">
+        <svg fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+        Instagram
+      </a>
+    </div>
+  </footer>
+</body>
+</html>

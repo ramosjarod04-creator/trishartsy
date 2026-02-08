@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | TrishArtSy</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: #ffebdb;
+      padding: 40px 60px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #edd5d5;
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    header h1 { color: #551919; }
+
+    /* Navigation area */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .nav-links a {
+     margin-left: 20px;
+  background: #c5b8c8;
+  padding: 10px 15px;
+  border-radius: 12px;
+  color: #672727;
+  font-weight: 800;
+  transition: 0.3s;
+  text-decoration: none;
+    }
+    .nav-links a:hover {
+     background: #b79dbf;
+  color: #ac2c24;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff3f3;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background: #c5b8c8;
+      color: #551919;
+    }
+    tr:hover {
+      background: #f9ecec;
+    }
+    .btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      color: white;
+    }
+    .accept { background: #6a8f6a; }
+    .deny { background: #b85a5a; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Admin Dashboard 🎨</h1>
+
+    <div class="nav-links">
+      <a href="{% url 'admin_gallery' %}">Gallery Uploads</a>
+      <a href="/" style="color:#551919;">Log Out</a>
+    </div>
+  </header>
+
+  <table>
+    <tr>
+      <th>Full Name</th>
+      <th>Contact</th>
+      <th>Date</th>
+      <th>Art Style</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+
+    {% for a in appointments %}
+    <tr>
+      <td>{{ a.fullname }}</td>
+      <td>{{ a.contact }}</td>
+      <td>{{ a.date }}</td>
+      <td>{{ a.artstyle }}</td>
+      <td>{{ a.status }}</td>
+      <td>
+        {% if a.status == "Pending" %}
+        <a href="{% url 'accept_booking' a.id %}" class="btn accept">Accept</a>
+        <a href="{% url 'deny_booking' a.id %}" class="btn deny">Deny</a>
+        {% else %}
+        <span style="color:gray;">No action</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>

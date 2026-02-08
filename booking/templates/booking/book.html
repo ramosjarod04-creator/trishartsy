@@ -1,0 +1,378 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrishArtSy | Book Now</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: #ffebdb;
+  color: #111;
+  min-height: 100vh;
+  padding: 40px 60px;
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #edd5d5;
+  padding: 20px 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  margin-bottom: 40px;
+}
+
+header h1 {
+  font-size: 35px;
+  font-weight: 900;
+  color: #551919;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+nav a {
+  background: #c5b8c8;
+  padding: 10px 15px;
+  border-radius: 12px;
+  color: #672727;
+  font-weight: 800;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+nav a:hover {
+  background: #b79dbf;
+  color: #ac2c24;
+}
+
+/* Notification Bell */
+.notification {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification i {
+  font-size: 24px;
+  color: #672727;
+  transition: 0.3s;
+}
+
+.notification:hover i {
+  color: #ac2c24;
+}
+
+.notification .badge {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  background: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+/* Notification Dropdown */
+.notif-dropdown {
+  position: absolute;
+  top: 35px;
+  right: 0;
+  background: #fff8f8;
+  border: 1px solid #b79dbf;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  width: 260px;
+  display: none;
+  z-index: 10;
+  padding: 10px;
+}
+
+.notif-dropdown.active {
+  display: block;
+}
+
+.notif-item {
+  padding: 10px;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+}
+
+.notif-item:last-child {
+  border-bottom: none;
+}
+
+/* Booking Form */
+.booking-section {
+  background: #fff3f3;
+  border: 2px solid #3b2222;
+  border-radius: 15px;
+  padding: 40px 50px;
+  max-width: 650px;
+  margin: 0 auto;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+}
+
+.booking-section h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #551919;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #4a2424;
+}
+
+form input,
+form select,
+form textarea {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: 1.5px solid #b58d8d;
+  font-size: 15px;
+  background: #fff;
+  outline: none;
+  transition: 0.3s;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+  border-color: #a35959;
+  box-shadow: 0 0 8px rgba(163, 89, 89, 0.3);
+}
+
+.book-btn {
+  display: inline-block;
+  background: #a35959;
+  color: #fff;
+  font-weight: 500;
+  padding: 14px 40px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-size: 16px;
+  box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3);
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.book-btn:hover {
+  background: #986ebe;
+  box-shadow: 0 8px 20px rgba(147, 51, 234, 0.4);
+  transform: translateY(-3px);
+}
+
+/* GCash Section */
+.payment-section {
+  background: #fef7f7;
+  border: 2px dashed #a35959;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.payment-section h3 {
+  color: #551919;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.payment-section img {
+  width: 180px;
+  height: auto;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+/* Footer */
+footer {
+  margin-top: 60px;
+  padding: 30px;
+  background: #edd5d5;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+footer p {
+  color: #551919;
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.social-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #fff3f3;
+  color: #551919;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.social-links a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+  background: #ffeaea;
+}
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>TrishArtSy 🎨</h1>
+    <nav>
+      <!-- Notification Bell (LEFT side of Gallery) -->
+      <div class="notification" id="notifBell">
+        <i class="fa-solid fa-bell"></i>
+        {% if latest_booking %}
+          <span class="badge">1</span>
+        {% endif %}
+
+        <div class="notif-dropdown" id="notifDropdown">
+          {% if latest_booking %}
+            {% if latest_booking.status == 'Accepted' %}
+              <div class="notif-item">✅ Your booking has been <b>Accepted!</b></div>
+            {% elif latest_booking.status == 'Denied' %}
+              <div class="notif-item">❌ Your booking was <b>Denied</b>.</div>
+            {% else %}
+              <div class="notif-item">⏳ Your booking is <b>Pending</b> approval.</div>
+            {% endif %}
+          {% else %}
+            <div class="notif-item">No new notifications.</div>
+          {% endif %}
+        </div>
+      </div>
+
+
+      <a href="{% url 'gallery' %}">Gallery</a>
+      <a href="{% url 'about' %}">About</a>
+      <a href="{% url 'book' %}">Book Now</a>
+      <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+  </header>
+
+  <section class="booking-section">
+    <h2>Book an Appointment</h2>
+
+    <form method="POST" action="{% url 'book' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <label for="fullname">Full Name</label>
+      <input type="text" id="fullname" name="fullname" required>
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="contact">Contact Number</label>
+      <input type="text" id="contact" name="contact" required>
+
+      <label for="date">Preferred Date</label>
+      <input type="date" id="date" name="date" required>
+
+      <label for="artstyle">Select Art Style</label>
+      <select id="artstyle" name="artstyle" required>
+        <option value="">-- Choose Art Style --</option>
+        <option>Line Art Style (₱40 - ₱200)</option>
+        <option>No Face Features Art Style (₱80 - ₱150)</option>
+        <option>Detailed Vector Art (₱80 - ₱250)</option>
+        <option>Detailed Vector w/ Background (₱250 - ₱800)</option>
+        <option>Cutesie Cartoon Art Style (₱80 - ₱200)</option>
+        <option>Cutesie Cartoon w/ Background (₱150 - ₱300)</option>
+        <option>Pet Illustration (₱80 - ₱150)</option>
+        <option>Chibi Style (₱100 - ₱200)</option>
+      </select>
+
+      <label for="art_image">Upload Image to Draw</label>
+      <input type="file" id="art_image" name="art_image" accept="image/*" required>
+
+      <div class="payment-section">
+        <h3>Payment Method - GCash</h3>
+        <p>Scan the QR code below to send payment:</p>
+        <img src="{% static 'images/gcash_qr.png' %}" alt="GCash QR Code">
+        <label for="payment_reference">Upload Payment Screenshot / Reference Number</label>
+        <input type="file" id="payment_reference" name="payment_reference" accept="image/*" required>
+      </div>
+
+      <button type="submit" class="book-btn">Submit Booking</button>
+    </form>
+  </section>
+
+  <footer>
+    <p>Follow TrishArtSy on Social Media</p>
+    <div class="social-links">
+      <a href="https://www.facebook.com/trishartsy" target="_blank">
+        <i class="fab fa-facebook-f"></i> Facebook
+      </a>
+      <a href="https://www.instagram.com/trishartsy_" target="_blank">
+        <i class="fab fa-instagram"></i> Instagram
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    const bell = document.getElementById("notifBell");
+    const dropdown = document.getElementById("notifDropdown");
+
+    bell.addEventListener("click", (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle("active");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!bell.contains(e.target)) {
+        dropdown.classList.remove("active");
+      }
+    });
+  </script>
+
+</body>
+</html>

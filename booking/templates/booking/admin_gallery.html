@@ -1,0 +1,280 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Gallery | TrishArtSy</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: #ffebdb;
+      padding: 40px 60px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #edd5d5;
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    header h1 {
+      color: #551919;
+    }
+    nav {
+  display: flex;
+  align-items: center;
+}
+
+nav a {
+  margin-left: 20px;
+  background: #c5b8c8;
+  padding: 10px 15px;
+  border-radius: 12px;
+  color: #672727;
+  font-weight: 800;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+nav a:hover {
+  background: #b79dbf;
+  color: #ac2c24;
+}
+    h2 {
+      color: #551919;
+      margin-bottom: 20px;
+      margin-top: 10px;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 25px;
+    }
+    .card {
+      background: #fff3f3;
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    .card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+    .card img:hover {
+      opacity: 0.85;
+    }
+    .info {
+      margin-top: 10px;
+      text-align: center;
+    }
+    .info h3 {
+      color: #551919;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+    .info small {
+      color: #7a5a5a;
+    }
+    .reference-section {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 2px solid #edd5d5;
+    }
+    .reference-section p {
+      text-align: center;
+      color: #7a5a5a;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      background: #fff3f3;
+      border-radius: 15px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    .empty-state p {
+      color: #551919;
+      font-weight: 600;
+      font-size: 18px;
+    }
+    .status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 5px;
+    }
+    .status.Pending { background: #fff2cc; color: #7a6200; }
+    .status.Accepted { background: #d1f7d1; color: #1f7a1f; }
+    .status.Denied { background: #f7d1d1; color: #7a1f1f; }
+    
+   
+    
+    /* Lightbox Modal */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    .lightbox.active {
+      display: flex;
+    }
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      border-radius: 10px;
+      box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .lightbox-close:hover {
+      color: #f1f1f1;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🖼️ Client Art Gallery</h1>
+    <nav>
+      <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+      <a href="{% url 'logout' %}" style="color:#b85a5a;">Log Out</a>
+    </nav>
+  </header>
+
+  <!-- ✅ ACCEPTED ARTWORKS -->
+  <section>
+    <h2>✅ Accepted Artworks</h2>
+    {% if uploads %}
+    <div class="gallery-grid">
+      {% for art in uploads %}
+      <div class="card">
+        {% if art.art %}
+          <img src="{{ art.art.url }}" alt="Client Art by {{ art.client_name }}" onclick="openLightbox('{{ art.art.url }}')">
+        {% else %}
+          <div style="width: 100%; height: 250px; background: #e0bcbc; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #551919; font-weight: 600;">No Image</div>
+        {% endif %}
+        <div class="info">
+          <h3>{{ art.client_name }}</h3>
+          <small>Uploaded: {{ art.date_uploaded|date:"M d, Y" }}</small>
+        </div>
+        
+        <div class="reference-section">
+          <p>Reference Image:</p>
+          {% if art.reference %}
+            <img src="{{ art.reference.url }}" alt="Reference Image" onclick="openLightbox('{{ art.reference.url }}')">
+          {% else %}
+            <p style="color: #999; font-size: 14px;">No reference image</p>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p>📭 No accepted artworks yet.</p>
+    </div>
+    {% endif %}
+  </section>
+
+  <hr style="margin: 50px 0; border: 1px solid #e0bcbc;">
+
+  <!-- 🕒 PENDING / DENIED BOOKINGS -->
+  <section>
+    <h2>🕒 Pending & Denied Bookings</h2>
+    {% if appointments %}
+    <div class="gallery-grid">
+      {% for appointment in appointments %}
+      <div class="card">
+        {% if appointment.art_image %}
+          <img src="{{ appointment.art_image.url }}" alt="Art by {{ appointment.fullname }}">
+        {% else %}
+          <div style="width: 100%; height: 250px; background: #e0bcbc; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #551919; font-weight: 600;">No Image</div>
+        {% endif %}
+        <div class="info">
+          <h3>{{ appointment.fullname }}</h3>
+          <small>Uploaded: {{ appointment.created_at|date:"M d, Y" }}</small><br>
+          <span class="status {{ appointment.status }}">{{ appointment.status }}</span>
+        </div>
+
+        <div class="reference-section">
+          <p>Payment Reference:</p>
+          {% if appointment.payment_reference %}
+            <img src="{{ appointment.payment_reference.url }}" alt="Payment Reference" onclick="openLightbox('{{ appointment.payment_reference.url }}')">
+          {% else %}
+            <p style="color: #999; font-size: 14px;">No payment reference</p>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p>📭 No pending or denied bookings yet.</p>
+    </div>
+    {% endif %}
+  </section>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close">&times;</span>
+    <img id="lightbox-img" src="" alt="Full size image">
+  </div>
+
+  <script>
+    function openLightbox(imageSrc) {
+      document.getElementById('lightbox').classList.add('active');
+      document.getElementById('lightbox-img').src = imageSrc;
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeLightbox();
+      }
+    });
+  </script>
+</body>
+</html>
